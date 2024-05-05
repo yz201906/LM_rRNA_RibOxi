@@ -1,0 +1,138 @@
+---
+title: "rRNA RibOxi-Seq summarization for L.major"
+author: "Yinzhou Zhu"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+# In this sctipt, analysis is done with L.*major*  
+
+
+## Import the counts from BED files  
+```{r import counts, echo=FALSE}
+files_to_read<- str_remove(dir(pattern="LM[1-9]\\.bed"), pattern = "\\.bed")
+
+for (each_file in files_to_read){
+  assign(each_file, read_delim(paste(each_file, ".bed", sep = ""), "\t", escape_double = FALSE, col_names = FALSE,
+                     col_types = cols(X5 = col_skip(), X4 = col_skip()), trim_ws = TRUE))
+  }
+```
+
+
+## Counting all 3' ends of the alignments  
+```{r tally end counts, echo=FALSE}
+for (each_df in ls(pattern = "LM.$")){
+    assign(paste(each_df, "_3_end", sep = ""), get(each_df)%>%rename(gene_symbol=X1, start=X2, end=X3, strand=X6)%>%filter(grepl("LM",gene_symbol)&(strand=="+"))%>%group_by(gene_symbol, end)%>%tally(name = each_df))
+}
+full_list <- get(paste(each_df, "_3_end", sep = ""))[FALSE,]
+colnames(full_list)<-c("gene_symbol", "end", "n")
+```
+
+## Output summarized counts  
+```{r join samples and write to file}
+for (each_file in files_to_read){
+    full_list <- data.frame(full_join(full_list, get(paste(each_file, "_3_end", sep = ""))))
+  }
+full_list<-full_list%>%replace(is.na(.), 0)
+full_list$n<-NULL
+write.csv(full_list, file = "LM_counts.csv", row.names = FALSE, col.names = FALSE)
+```
+
+## Visualization  
+
+### Raw counts  
+
+These are the raw counts for all three replicates, and the black bars are std error bars  
+
+
+
+```{r raw counts}
+full_list%>%
+        gather(key="Samples", value = "counts", starts_with("LM"))%>%
+          ggplot(aes(x=end, y=counts))+geom_col(aes(fill=Samples)) + 
+            xlab("Position") + ylab("Count") + theme(panel.background = element_rect(fill = 'transparent', color = 'black'), panel.grid = element_blank()) + facet_wrap(vars(gene_symbol), ncol = 1, scales = "free") + stat_summary(geom = "errorbar", fun.data = mean_sdl, position = "dodge")
+```
+\newpage  
+
+### Scores  
+
+For a initial look the calculation for scores is as follows:
+
+1. Calculate mean for each position by averaging all 3 replicates (row means)  
+
+2. Calculate mean for the means of all positions (column mean of row means)  
+
+3. score = row means/(column mean of row means)  
+
+Since the 3 samples are pretty balanced in terms of total reads, so inter-sample normalization was not done  
+
+
+
+```{r normalized counts}
+full_list%>%
+        mutate(LM1=LM1/mean(LM1), LM4=LM4/mean(LM4),LM5=LM5/mean(LM5), .keep="unused") %>%
+        transmute(gene_symbol, end, norm_score = rowMeans(select(., -c(gene_symbol,end)))) %>%
+          ggplot(aes(x=end, y=norm_score))+geom_col() + 
+            xlab("Position") + ylab("Scores") + theme(panel.background = element_rect(fill = 'transparent', color = 'black'), panel.grid = element_blank()) + facet_wrap(vars(gene_symbol), ncol = 1, scales = "free") + coord_cartesian(ylim = c(0, 10))
+
+LM_score<-full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused")
+write.csv(LM_score, file = "LM_scores.csv")
+```
+\newpage
+
+## Fine tuning score cutoffs
+
+**Score cutoff: 2**  
+
+```{r normalized counts2}
+full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused") %>%
+        filter(norm_score>2) %>%
+          ggplot(aes(x=end, y=norm_score))+geom_col() + 
+            xlab("Position") + ylab("Scores") + theme(panel.background = element_rect(fill = 'transparent', color = 'black'), panel.grid = element_blank()) + facet_wrap(vars(gene_symbol), ncol = 1, scales = "free") + coord_cartesian(ylim = c(0, 15))
+
+LM_score<-full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused")
+```
+\newpage
+**Score cutoff: 1**  
+
+```{r normalized counts3}
+full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused") %>%
+        filter(norm_score>1) %>%
+          ggplot(aes(x=end, y=norm_score))+geom_col() + 
+            xlab("Position") + ylab("Scores") + theme(panel.background = element_rect(fill = 'transparent', color = 'black'), panel.grid = element_blank()) + facet_wrap(vars(gene_symbol), ncol = 1, scales = "free") + coord_cartesian(ylim = c(0, 15))
+
+LM_score<-full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused")
+```
+\newpage
+**Score cutoff: 3**  
+
+```{r normalized counts4}
+full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused") %>%
+        filter(norm_score>3) %>%
+          ggplot(aes(x=end, y=norm_score))+geom_col() + 
+            xlab("Position") + ylab("Scores") + theme(panel.background = element_rect(fill = 'transparent', color = 'black'), panel.grid = element_blank()) + facet_wrap(vars(gene_symbol), ncol = 1, scales = "free") + coord_cartesian(ylim = c(0, 15))
+
+LM_score<-full_list%>%
+        transmute(gene_symbol, end, count_mean = rowMeans(select(., -c(gene_symbol,end)))) %>%
+        mutate(norm_score=count_mean/mean(count_mean), .keep="unused")
+```

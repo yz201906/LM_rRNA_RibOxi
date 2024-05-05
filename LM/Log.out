@@ -1,0 +1,79 @@
+STAR version=2.7.5c
+STAR compilation time,server,dir=Wed 09 Sep 2020 03:15:10 PM EDT :/home/yinzhou/STAR/source
+##### Command Line:
+STAR --runMode genomeGenerate --runThreadN 10 --genomeDir /home/yinzhou/Data/genomes/LM --genomeFastaFiles LM.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runMode                       genomeGenerate     ~RE-DEFINED
+runThreadN                    10     ~RE-DEFINED
+genomeDir                     /home/yinzhou/Data/genomes/LM     ~RE-DEFINED
+genomeFastaFiles              LM.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        10
+genomeDir                         /home/yinzhou/Data/genomes/LM
+genomeFastaFiles                  LM.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 10   --genomeDir /home/yinzhou/Data/genomes/LM   --genomeFastaFiles LM.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory exists and will be overwritten: /home/yinzhou/Data/genomes/LM/
+May 05 15:53:57 ... starting to generate Genome files
+LM.fasta : chr # 0  "LM_SSU" chrStart: 0
+LM.fasta : chr # 1  "LM_5.8S" chrStart: 262144
+LM.fasta : chr # 2  "LM_LSU5" chrStart: 524288
+LM.fasta : chr # 3  "LM_SR1" chrStart: 786432
+LM.fasta : chr # 4  "LM_LSU3" chrStart: 1048576
+LM.fasta : chr # 5  "LM_SR2" chrStart: 1310720
+LM.fasta : chr # 6  "LM_SR6" chrStart: 1572864
+LM.fasta : chr # 7  "LM_SR4" chrStart: 1835008
+Chromosome sequence lengths: 
+LM_SSU	2204
+LM_5.8S	171
+LM_LSU5	1781
+LM_SR1	216
+LM_LSU3	1521
+LM_SR2	183
+LM_SR6	73
+LM_SR4	135
+Genome sequence total length = 6284
+Genome size with padding = 2097152
+Estimated genome size with padding and SJs: total=genome+SJ=203097152 = 2097152 + 201000000
+GstrandBit=32
+Number of SA indices: 12568
+May 05 15:53:57 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 10;   chunks size limit: 11168 bytes
+May 05 15:53:57 ... sorting Suffix Array chunks and saving them to disk...
+Writing 10992 bytes into /home/yinzhou/Data/genomes/LM//SA_6 ; empty space on disk = 2472490467328 bytes ... done
+Writing 1904 bytes into /home/yinzhou/Data/genomes/LM//SA_9 ; empty space on disk = 2472490455040 bytes ... done
+Writing 11040 bytes into /home/yinzhou/Data/genomes/LM//SA_4 ; empty space on disk = 2472490450944 bytes ...Writing 10848 bytes into /home/yinzhou/Data/genomes/LM//SA_8 ; empty space on disk = 2472490450944 bytes ... done
+ done
+Writing 10824 bytes into /home/yinzhou/Data/genomes/LM//SA_5 ; empty space on disk = 2472490426368 bytes ... done
+Writing 10872 bytes into /home/yinzhou/Data/genomes/LM//SA_0 ; empty space on disk = 2472490414080 bytes ... done
+Writing 10992 bytes into /home/yinzhou/Data/genomes/LM//SA_3 ; empty space on disk = 2472490401792 bytes ...Writing 11152 bytes into /home/yinzhou/Data/genomes/LM//SA_1 ; empty space on disk = 2472490397696 bytes ...Writing 11064 bytes into /home/yinzhou/Data/genomes/LM//SA_7 ; empty space on disk = 2472490389504 bytes ...Writing 11064 bytes into /home/yinzhou/Data/genomes/LM//SA_7 ; empty space on disk = 2472490389504 bytes ... done
+Writing 10856 bytes into /home/yinzhou/Data/genomes/LM//SA_2 ; empty space on disk = 2472490381312 bytes ... done
+ done
+ done
+May 05 15:53:57 ... loading chunks from disk, packing SA...
+May 05 15:53:57 ... finished generating suffix array
+May 05 15:53:57 ... generating Suffix Array index
+May 05 15:53:57 ... completed Suffix Array index
+May 05 15:53:57 ... writing Genome to disk ...
+Writing 2097152 bytes into /home/yinzhou/Data/genomes/LM//Genome ; empty space on disk = 2472495710208 bytes ... done
+SA size in bytes: 51846
+May 05 15:53:57 ... writing Suffix Array to disk ...
+Writing 51846 bytes into /home/yinzhou/Data/genomes/LM//SA ; empty space on disk = 2472493764608 bytes ... done
+May 05 15:53:57 ... writing SAindex to disk
+Writing 8 bytes into /home/yinzhou/Data/genomes/LM//SAindex ; empty space on disk = 2472493715456 bytes ... done
+Writing 48 bytes into /home/yinzhou/Data/genomes/LM//SAindex ; empty space on disk = 2472493715456 bytes ... done
+Writing 5971 bytes into /home/yinzhou/Data/genomes/LM//SAindex ; empty space on disk = 2472493715456 bytes ... done
+May 05 15:53:57 ..... finished successfully
+DONE: Genome generation, EXITING
